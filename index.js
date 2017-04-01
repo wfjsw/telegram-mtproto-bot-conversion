@@ -27,12 +27,15 @@ BotConversion.prototype.getMe = function() {
     })
     .then((userfull) => {
         //this.me = userfull.user // update Cached Auth
-        return { 
+        var ret = { 
             id: userfull.user.id,
             first_name: userfull.user.first_name,
-            last_name: userfull.user.last_name,
+
             username: userfull.user.username
         }
+        if (userfull.user.last_name) 
+            ret = Object.assign(ret, { last_name: userfull.user.last_name })
+        return ret
     })
 }
 
