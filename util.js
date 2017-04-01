@@ -2,6 +2,10 @@
 
 var me = {};
 
+me.createRandomId = () => {
+    return Date.now() // it should be ok
+}
+
 me.createPeer = (id) => {
     var _id = id
     if (id instanceof String && !isNaN(id)) _id = parseInt(id)
