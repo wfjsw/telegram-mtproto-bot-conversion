@@ -3,24 +3,25 @@ const _util = require('./util')
 
 // main
 
-var BotConversion = (client, options) => {
+function BotConversion(client, options) {
     this.client = client
     this.options = options
     if (options.api_id instanceof String) 
         this.options.api_id = parseInt(options.api_id)
 }
 
-BotConversion.prototype.start = () => {
+BotConversion.prototype.login = function() {
+    var _options = this.options
     return this.client('auth.importBotAuthorization', {
-        api_id: this.options.api_id,
-        api_hash: this.options.api_hash,
-        bot_auth_token: this.options.token
+        api_id: _options.api_id,
+        api_hash: _options.api_hash,
+        bot_auth_token: _options.token
     }).then((auth) => {
         return auth.user
     })
 }
 
-BotConversion.prototype.getMe = () => {
+BotConversion.prototype.getMe = function() {
     return this.client('users.getFullUser', {
         id: { _: 'inputUserSelf' } 
     })
@@ -33,10 +34,10 @@ BotConversion.prototype.getMe = () => {
             username: userfull.user.username
         }
     })
-});
+}
 
 
-BotConversion.prototype.sendMessage = (chat_id, text, options) => {
+BotConversion.prototype.sendMessage = function(chat_id, text, options) {
     var _options = Object.assign({}, options)
     var targetPeer = _util.createPeer(chat_id)
     var opt = {
@@ -52,10 +53,9 @@ BotConversion.prototype.sendMessage = (chat_id, text, options) => {
         opt = Object.assign(opt, { reply_markup: _util.createReplyMarkup(_options.reply_markup) })
     // TODO: insert parse_mode parser here
     return this.client('messages.sendMessage', opt)
-        
 }
 
-BotConversion.prototype.forwardMessage = (chat_id, from_chat_id, message_id, options) => {
+BotConversion.prototype.forwardMessage = function(chat_id, from_chat_id, message_id, options) {
     var _options = Object.assign({}, options)
     var targetPeer = _util.createPeer(chat_id)
     var fromPeer = _util.createPeer(from_chat_id)
@@ -80,7 +80,7 @@ BotConversion.prototype.forwardMessage = (chat_id, from_chat_id, message_id, opt
 // sendVideo
 // sendVoice
 
-BotConversion.prototype.sendLocation = (chat_id, lat, long, options) => {
+BotConversion.prototype.sendLocation = function(chat_id, lat, long, options) {
     var _options = Object.assign({}, options)
     var targetPeer = _util.createPeer(chat_id)
     var opt = {
@@ -103,7 +103,7 @@ BotConversion.prototype.sendLocation = (chat_id, lat, long, options) => {
     return this.client('messages.sendMedia', opt)
 }
 
-BotConversion.prototype.sendVenue = (chat_id, lat, long, title, address, options) => {
+BotConversion.prototype.sendVenue = function(chat_id, lat, long, title, address, options) {
     var _options = Object.assign({}, options)
     var targetPeer = _util.createPeer(chat_id)
     var opt = {
@@ -131,7 +131,7 @@ BotConversion.prototype.sendVenue = (chat_id, lat, long, title, address, options
     return this.client('messages.sendMedia', opt)
 }
 
-BotConversion.prototype.sendContact = (chat_id, phone_number, first_name, options) => {
+BotConversion.prototype.sendContact = function(chat_id, phone_number, first_name, options) {
     var _options = Object.assign({}, options)
     var targetPeer = _util.createPeer(chat_id)
     var opt = {
@@ -152,7 +152,7 @@ BotConversion.prototype.sendContact = (chat_id, phone_number, first_name, option
     return this.client('messages.sendMedia', opt)
 }
 
-BotConversion.prototype.sendChatAction = (chat_id, action) => {
+BotConversion.prototype.sendChatAction = function(chat_id, action) {
     var targetPeer = _util.createPeer(chat_id)
     var _action = {}
     switch (action) {
@@ -199,3 +199,6 @@ BotConversion.prototype.sendChatAction = (chat_id, action) => {
 // getChatMembersCount -- ^
 // getChatMember -- ^
 // answerCallbackQuery
+
+
+module.exports = exports = BotConversion
