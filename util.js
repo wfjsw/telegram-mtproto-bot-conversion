@@ -6,7 +6,20 @@ me.createRandomId = () => {
     return Date.now() // it should be ok
 }
 
-me.createPeer = (id) => {
+
+me.typeofPeer = (id) => {
+    var _id = id
+    if (id instanceof String && !isNaN(id)) _id = parseInt(id)
+    if (_id > 0)
+        return 'User'
+    else if (_id < -(Math.pow(10, 12)))
+        return 'Channel'
+    else if (_id < 0)
+        return 'Chat'
+}
+
+
+me.createInputPeer = (id) => {
     var _id = id
     if (id instanceof String && !isNaN(id)) _id = parseInt(id)
     if (_id > 0)
@@ -110,4 +123,32 @@ me.createReplyMarkup = (reply_markup) => {
     }
 }
 
+me.isAdministrator = (participant) => {
+    switch (participant._){
+        case 'chatParticipantCreator': 
+        case 'chatParticipantAdmin':
+            return true
+        default: 
+            return false
+    }
+}
+
+me.parseEntities = (message) => {
+    if (!Array.isArray(message)) return { message, entities:false }
+    var text = ''
+    var entities = {}
+    message.forEach(shard => {
+        let offset = text.length, length = shard.text.length
+        text += shard.text
+        if (shard.type) {
+            entities.push({
+                _: '', //?
+                offset,
+                length,
+            })
+        }
+    })
+    return { message: text, entities }
+}
+    
 module.exports = exports = me
